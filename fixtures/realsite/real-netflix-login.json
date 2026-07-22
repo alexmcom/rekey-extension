@@ -1,0 +1,11 @@
+{
+  "url": "https://www.netflix.com/ca/login",
+  "kind": "login",
+  "note": "REAL: Netflix login. Username field is type=text with autocomplete=email (not type=email); password autocomplete is 'password' not 'current-password'. Button 'Continue' (no login/signup word).",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true, "userName": "userLoginId" },
+    "findNewPasswordFields": null,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

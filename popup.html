@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{
+    --ink:#161022; --ink2:#241a36; --line:#372a4d; --muted:#a99cc2;
+    --pink:#d4438d; --pink-2:#e878b0; --violet:#9a7fd0;
+    --paper:#f6f1fb; --ok:#43c98a; --warn:#f0b64a; --danger:#ff6b70;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{width:340px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(130% 80% at 50% -12%, rgba(154,127,208,.20), transparent 62%), var(--ink);color:var(--paper);font-size:14px;line-height:1.45}
+  header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px}
+  .logo{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;letter-spacing:.2px;font-size:22px;color:var(--paper)}
+  .logo b{color:var(--pink);font-weight:500}
+  .badge{font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--pink);
+    border:1px solid var(--pink);border-radius:999px;padding:2px 8px;text-transform:uppercase}
+  .tabs{display:flex;gap:4px;padding:0 12px 8px}
+  .tab{flex:1;text-align:center;padding:7px;border-radius:8px;color:var(--muted);cursor:pointer;font-weight:600;font-size:12px}
+  .tab.active{background:var(--ink2);color:var(--paper)}
+  main{padding:6px 16px 8px;min-height:180px}
+  .lockbtn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px}
+  .lockbtn:hover{color:var(--paper)}
+  label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+  input{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);
+    background:var(--ink2);color:var(--paper);font-size:14px}
+  input:focus{outline:none;border-color:var(--pink)}
+  select{padding:7px 8px;border-radius:8px;border:1px solid var(--line);background:var(--ink2);color:var(--paper);font-size:13px}
+  select:focus{outline:none;border-color:var(--pink)}
+  .btn{width:100%;padding:11px;border:none;border-radius:999px;background:var(--pink);color:#fff;
+    font-weight:700;font-size:14px;cursor:pointer;margin-top:12px}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn.ghost{background:var(--ink2);border:1px solid var(--line)}
+  .hint{color:var(--muted);font-size:11.5px;margin-top:8px}
+  .err{color:var(--danger);font-size:12px;margin-top:8px;min-height:14px}
+  .acct{border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:8px 0;background:var(--ink2)}
+  .acct .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .site{font-weight:700}
+  .user{color:var(--muted);font-size:12px}
+  .sitehead{display:flex;align-items:center;gap:10px;min-width:0}
+  .sitehead>div{min-width:0}
+  .fav{position:relative;flex:none;width:26px;height:26px;border-radius:7px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .favmono{color:#fff;font-weight:700;font-size:13px;line-height:1}
+  .favicon{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff}
+  .pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;text-transform:uppercase;letter-spacing:.4px}
+  .pill.fresh{background:rgba(47,210,122,.15);color:var(--ok)}
+  .pill.safe{background:rgba(47,210,122,.15);color:var(--ok)}
+  .pill.unknown{background:rgba(154,163,178,.15);color:var(--muted)}
+  .pill.breached{background:rgba(255,90,95,.15);color:var(--danger)}
+  .pill.sso{background:rgba(120,150,255,.16);color:#8fa6ff}
+  .ssoguide{color:#c4ccdb;font-size:12.5px;margin:9px 0 4px;line-height:1.5}
+  .ssoguide b{color:#8fa6ff}
+  .breachnote{color:var(--danger);font-size:12px;margin-top:7px;font-weight:600}
+  .safenote{color:var(--ok);font-size:12px;margin-top:7px;font-weight:600}
+  .toolbar{display:flex;gap:8px;margin-bottom:6px}
+  .toolbar .btn{margin-top:0;flex:1;padding:9px;font-size:12.5px}
+  .addform{border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:2px 0 10px;background:var(--ink2)}
+  .addform input{margin-bottom:8px}
+  .addform .rowbtns{display:flex;gap:8px}
+  .addform .rowbtns .btn{margin-top:2px}
+  .remove{color:var(--muted);font-size:11.5px;background:none;border:none;cursor:pointer}
+  .remove:hover{color:var(--danger)}
+  .capbanner{border:1px solid var(--pink);background:rgba(212,67,141,.10);border-radius:14px;padding:11px 12px;margin:0 0 10px}
+  .capbanner .t{font-size:12.5px;color:#e9d3de;margin-bottom:8px}
+  .capbanner .t b{color:#fff}
+  .capbanner .rowbtns{display:flex;gap:8px}
+  .capbanner .btn{margin-top:0;padding:8px;font-size:12.5px}
+  .keystone{border:1px solid #8fa6ff55;background:rgba(120,150,255,.08);border-radius:10px;padding:11px 12px;margin:0 0 10px}
+  .keystone .kh{font-weight:700;color:#bcccff;font-size:13px}
+  .keystone .kb{color:#c4ccdb;font-size:12px;margin:4px 0 9px;line-height:1.5}
+  .keystone .rowbtns{display:flex;gap:8px;flex-wrap:wrap}
+  .keystone .btn{margin-top:0;padding:7px 10px;font-size:12px;flex:1;text-align:center}
+  .keystone .tip{color:#9aa3b2;font-size:11.5px;margin-top:8px}
+  .reusednote{color:var(--warn);font-size:12px;margin-top:7px;font-weight:600}
+  .bulkbtn{width:100%;padding:12px;border:none;border-radius:999px;background:var(--pink);color:#fff;font-weight:700;font-size:14px;cursor:pointer;margin:0 0 10px}
+  .bulkbtn:hover{filter:brightness(1.08)}
+  .bulkbtn:disabled{opacity:.6;cursor:default}
+  .bulkprog{border:1px solid var(--line);border-radius:10px;padding:12px 13px;margin:0 0 10px;background:var(--ink2);font-size:12.5px}
+  .bulkprog .phead{font-weight:700;margin-bottom:8px}
+  .bulkprog .prow{padding:4px 0;border-top:1px solid #ffffff10;color:#c4ccdb;display:flex;justify-content:space-between;gap:8px}
+  .bulkprog .prow .ok{color:var(--ok)}.bulkprog .prow .bad{color:var(--warn)}.bulkprog .prow .run{color:var(--muted)}
+  .health{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+  .hc{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--ink2);color:var(--muted)}
+  .hc.bad{background:rgba(255,90,95,.15);color:var(--danger)}
+  .hc.warn{background:rgba(255,176,32,.15);color:var(--warn)}
+  .hc.ok{background:rgba(47,210,122,.15);color:var(--ok)}
+  .hc.muted{background:rgba(154,163,178,.12);color:var(--muted)}
+  .editrow{display:flex;gap:8px;margin-top:8px}
+  .editrow .btn{margin-top:0;padding:8px;font-size:12.5px}
+  a.btn{display:block;text-decoration:none}
+  .secret{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#cdd3dd;
+    background:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 8px;margin-top:8px;
+    display:flex;align-items:center;justify-content:space-between;gap:8px;word-break:break-all}
+  .link{color:var(--pink);cursor:pointer;font-size:11.5px;font-weight:600;background:none;border:none;padding:0}
+  .acct .actions{display:flex;gap:8px;margin-top:9px}
+  .acct .actions .btn{margin-top:0;font-size:12.5px;padding:8px}
+  .status{font-size:12px;color:var(--muted);margin-top:8px;min-height:16px}
+  .step{color:#cdd3dd}
+  .ok{color:var(--ok);font-weight:700}
+  .rcpt{border-left:2px solid var(--pink);padding:8px 10px;margin:8px 0;background:var(--ink2);border-radius:0 8px 8px 0}
+  .rcpt .t{font-size:11px;color:var(--muted)}
+  .rcpt .m{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#cdd3dd;margin-top:3px}
+  .empty{color:var(--muted);text-align:center;padding:26px 10px;font-size:13px}
+  footer{border-top:1px solid var(--line);padding:9px 16px;color:var(--muted);font-size:11px;text-align:center}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">Rekey</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="badge">Beta</span>
+      <button id="lockBtn" class="lockbtn hidden" title="Lock the vault">🔒 Lock</button>
+    </div>
+  </header>
+
+  <!-- SETUP / UNLOCK -->
+  <main id="gate">
+    <div id="setupView" class="hidden">
+      <div style="background:var(--ink2);border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:12px;font-size:12.5px;line-height:1.5;color:#c4ccdb">
+        <b style="color:var(--paper)">Rekey finds passwords caught in data breaches and changes them for you</b> — keeping the old one working until the new one is confirmed. It's not just another vault: it fixes the passwords that put you at risk.
+      </div>
+      <label for="mp1">Create a master password</label>
+      <input id="mp1" type="password" autocomplete="new-password" placeholder="Choose a strong master password" />
+      <div id="mpStrength" class="hint" style="margin-top:2px"></div>
+      <label for="mp2">Confirm master password</label>
+      <input id="mp2" type="password" autocomplete="new-password" placeholder="Type it again" />
+      <button id="createBtn" class="btn">Create my encrypted vault</button>
+      <div id="setupErr" class="err"></div>
+      <div class="hint">This encrypts everything on your device. Next you'll get a recovery kit so you can never lose your vault.</div>
+    </div>
+
+    <div id="kitView" class="hidden">
+      <label style="font-size:15px;color:var(--paper)">🔑 Save your recovery kit</label>
+      <div class="hint" style="margin-top:6px">If you ever reinstall Rekey or forget your master password, this kit is the only way to get your vault back. It's encrypted, so it's safe to store anywhere.</div>
+      <label style="margin-top:12px">Your recovery key</label>
+      <div class="secret" style="margin-top:4px"><span id="kitKey" style="font-size:13px"></span><button class="link" id="kitCopy">Copy</button></div>
+      <button id="kitDownload" class="btn ghost" style="margin-top:12px">⬇ Download recovery kit (backup file)</button>
+      <label style="display:flex;gap:8px;align-items:flex-start;margin-top:14px;font-size:12.5px;color:var(--muted);cursor:pointer">
+        <input type="checkbox" id="kitAck" style="width:auto;margin-top:2px" /> I've saved my recovery key and downloaded the kit somewhere safe.
+      </label>
+      <button id="kitDone" class="btn" disabled>Enter my vault</button>
+    </div>
+
+    <div id="unlockView" class="hidden">
+      <label for="mpUnlock">Enter your master password</label>
+      <input id="mpUnlock" type="password" autocomplete="current-password" placeholder="Master password" />
+      <button id="unlockBtn" class="btn">Unlock vault</button>
+      <div id="unlockErr" class="err"></div>
+      <button class="link" id="forgotLink" style="margin-top:8px">Forgot it? Use your recovery key</button>
+    </div>
+
+    <div id="recoveryView" class="hidden">
+      <label for="recInput">Enter your recovery key</label>
+      <input id="recInput" type="text" autocomplete="off" placeholder="RK-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX" />
+      <button id="recBtn" class="btn">Unlock with recovery key</button>
+      <div id="recErr" class="err"></div>
+      <button class="link" id="backToUnlock" style="margin-top:8px">Back to master password</button>
+    </div>
+
+    <div id="resetMasterView" class="hidden">
+      <div class="hint">Unlocked with your recovery key. Set a new master password now.</div>
+      <label for="rm1" style="margin-top:10px">New master password</label>
+      <input id="rm1" type="password" autocomplete="new-password" placeholder="New master password" />
+      <label for="rm2">Confirm new master password</label>
+      <input id="rm2" type="password" autocomplete="new-password" placeholder="Type it again" />
+      <button id="rmBtn" class="btn">Set new master password</button>
+      <div id="rmErr" class="err"></div>
+    </div>
+  </main>
+
+  <!-- MAIN APP -->
+  <div id="app" class="hidden">
+    <div class="tabs">
+      <div id="tabVault" class="tab active">Accounts</div>
+      <div id="tabHistory" class="tab">History</div>
+    </div>
+    <main>
+      <div id="captureBanner" class="capbanner hidden"></div>
+      <div id="toolbar" class="toolbar">
+        <button id="scanBtn" class="btn ghost">Scan for breaches</button>
+        <button id="addToggle" class="btn">+ Add account</button>
+      </div>
+      <div id="settingsToggleRow" class="toolbar">
+        <button id="settingsToggle" class="btn ghost" style="flex:1">⚙ Settings &amp; backup ▾</button>
+      </div>
+      <div id="settingsPanel" class="hidden">
+      <div id="toolbar2" class="toolbar">
+        <button id="importBtn" class="btn ghost" style="flex:1">⬇ Import from Chrome / CSV</button>
+        <input id="importFile" type="file" accept=".csv,text/csv" class="hidden" />
+      </div>
+      <div id="toolbar3" class="toolbar">
+        <button id="exportBtn" class="btn ghost">⬆ Export backup</button>
+        <button id="restoreBtn" class="btn ghost">↺ Restore backup</button>
+        <input id="restoreFile" type="file" accept=".json,application/json" class="hidden" />
+      </div>
+      <div id="settingsRow" class="toolbar" style="align-items:center">
+        <span style="color:var(--muted);font-size:12px;flex:1">Auto-lock after</span>
+        <select id="lockSel">
+          <option value="5">5 min</option>
+          <option value="15">15 min</option>
+          <option value="30">30 min</option>
+          <option value="60">1 hour</option>
+          <option value="0">Never</option>
+        </select>
+      </div>
+      <div id="cmpRow" class="toolbar">
+        <button id="cmpBtn" class="btn ghost">Change master password</button>
+        <button id="recKeyBtn" class="btn ghost">🔑 New recovery key</button>
+      </div>
+      <div id="syncRow" class="toolbar">
+        <button id="syncBtn" class="btn ghost">☁ Sync &amp; devices</button>
+      </div>
+      <div id="syncPanel" class="addform hidden"></div>
+      <div id="cmpPanel" class="addform hidden">
+        <input id="cmpCur" type="password" placeholder="Current master password" autocomplete="off" />
+        <input id="cmpNew1" type="password" placeholder="New master password" autocomplete="new-password" />
+        <input id="cmpNew2" type="password" placeholder="Confirm new master password" autocomplete="new-password" />
+        <div class="rowbtns">
+          <button id="cmpSave" class="btn">Change</button>
+          <button id="cmpCancel" class="btn ghost">Cancel</button>
+        </div>
+        <div id="cmpErr" class="err"></div>
+      </div>
+      </div><!-- /settingsPanel -->
+      <div id="addForm" class="addform hidden">
+        <input id="fSite" placeholder="Site (e.g. github.com)" autocomplete="off" />
+        <input id="fUser" placeholder="Username or email" autocomplete="off" />
+        <input id="fPass" placeholder="Password" autocomplete="off" />
+        <div id="fStrength" class="hint" style="margin-top:0"></div>
+        <div class="rowbtns">
+          <button id="fGen" class="btn ghost">Generate strong</button>
+          <button id="fSave" class="btn">Save account</button>
+        </div>
+        <div id="addErr" class="err"></div>
+      </div>
+      <div id="scanStatus" class="status"></div>
+      <div id="bulkBar"></div>
+      <div id="bulkProgress" class="bulkprog hidden"></div>
+      <input id="searchInput" placeholder="Search accounts…" autocomplete="off" style="margin-bottom:10px" />
+      <div id="vaultView"></div>
+      <div id="historyView" class="hidden"></div>
+    </main>
+  </div>
+
+  <footer>Local-first · encrypted on your device · your passwords never leave it</footer>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

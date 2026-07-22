@@ -1,0 +1,13 @@
+{
+  "url": "https://gitlab.com/users/sign_in",
+  "kind": "login",
+  "note": "REAL page captured via Chrome metadata 2026-07-16 (reconstructed from live attributes)",
+  "expect": {
+    "findLoginFields": {
+      "user": true,
+      "pass": true
+    },
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

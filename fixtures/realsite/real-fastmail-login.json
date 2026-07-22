@@ -1,0 +1,11 @@
+{
+  "url": "https://app.fastmail.com/login/",
+  "kind": "login",
+  "note": "REAL: Fastmail login (cross-domain fastmail.com -> app.fastmail.com). Password field NAME is literally 'current-password'; token-list autocomplete on username.",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true, "userName": "username" },
+    "findNewPasswordFields": null,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

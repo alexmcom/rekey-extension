@@ -1,0 +1,12 @@
+{
+  "url": "https://app.example.com/login",
+  "kind": "login",
+  "expect": {
+    "findLoginFields": {
+      "user": true,
+      "pass": true
+    },
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "url": "https://app.example.com/signup",
+  "kind": "signup",
+  "expect": {
+    "findNewPasswordFields": {
+      "newPass": true
+    },
+    "extractLogin": {
+      "username": "newuser@x.com",
+      "password": "GenPass123!"
+    }
+  }
+}

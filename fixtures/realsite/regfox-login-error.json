@@ -1,0 +1,12 @@
+{
+  "url": "https://auth.regfox.com/",
+  "kind": "login-error",
+  "note": "real F1: in-place SPA error must be detected",
+  "expect": {
+    "detectLoginError": true,
+    "findLoginFields": {
+      "user": true,
+      "pass": true
+    }
+  }
+}

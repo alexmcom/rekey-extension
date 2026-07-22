@@ -1,0 +1,11 @@
+{
+  "url": "https://www.etsy.com/signin",
+  "kind": "login",
+  "note": "REAL: Etsy login. Fields are NOT wrapped in a <form> (SPA) so scope is the whole document. A 'Register' toggle button is present alongside 'Sign in' — engine must NOT treat the lone password as a signup/new-password field.",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true, "userName": "email" },
+    "findNewPasswordFields": null,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

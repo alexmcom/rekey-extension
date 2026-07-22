@@ -1,0 +1,11 @@
+{
+  "url": "https://www.zoom.us/signin#/login",
+  "kind": "login",
+  "note": "REAL: Zoom login. BOTH fields have autocomplete=off, and the password has no id/label (name only) — engine must fall back to name/last-text-input, not autocomplete. A separate site-search form must be ignored (scope is the login form).",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true, "userName": "account" },
+    "findNewPasswordFields": null,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

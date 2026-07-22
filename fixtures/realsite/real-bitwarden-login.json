@@ -1,0 +1,11 @@
+{
+  "url": "https://vault.bitwarden.com/#/login",
+  "kind": "login",
+  "note": "REAL: Bitwarden (competitor) master-password login. Email field has NO name and NO autocomplete — only id + label; matched via type=email. Password labelled 'Master password'.",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true, "userName": "email" },
+    "findNewPasswordFields": null,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

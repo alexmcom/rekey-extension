@@ -1,0 +1,11 @@
+{
+  "url": "https://news.ycombinator.com/login",
+  "kind": "login",
+  "note": "REAL: login + register on ONE page (2 pw fields, no autocomplete/labels/ids) \u2014 HN pattern",
+  "expect": {
+    "findLoginFields": {
+      "user": true,
+      "pass": true
+    }
+  }
+}

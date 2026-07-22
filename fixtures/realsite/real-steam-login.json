@@ -1,0 +1,11 @@
+{
+  "url": "https://store.steampowered.com/login/",
+  "kind": "login",
+  "note": "REAL: Steam (React) login. Username field is LABEL-ONLY (aria-label 'Sign in with account name') with no name, no id, no autocomplete; password is also label-only. Decoys: a header store-search field and a hidden 2FA section — engine must scope to the login form and fall back to its last text input for the username.",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true },
+    "findNewPasswordFields": null,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

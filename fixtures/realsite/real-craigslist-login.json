@@ -1,0 +1,13 @@
+{
+  "url": "https://accounts.craigslist.org/login",
+  "kind": "login",
+  "note": "REAL: password login form + separate 'email a login link' form (2 email-ish fields, 2 forms). Must pick the login form's handle field, not the magic-link email.",
+  "expect": {
+    "findLoginFields": {
+      "user": true,
+      "pass": true,
+      "userName": "inputEmailHandle"
+    },
+    "classifyOutcome": "pending"
+  }
+}

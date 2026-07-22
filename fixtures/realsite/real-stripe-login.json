@@ -1,0 +1,12 @@
+{
+  "url": "https://dashboard.stripe.com/login",
+  "kind": "login",
+  "note": "REAL: Stripe login. TRAP — the password field's id is literally 'old-password', which could fool a naive change-password detector, but it is a plain login (autocomplete=current-password, single password field). Engine must fill it as a login and must NOT offer to generate a new password.",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true, "userName": "email" },
+    "findNewPasswordFields": null,
+    "looksLikeChangePassword": false,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

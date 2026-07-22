@@ -1,0 +1,11 @@
+{
+  "url": "https://www.paypal.com/signin?loginType=login",
+  "kind": "login",
+  "note": "REAL: PayPal login with TWO decoy captcha TEXT fields (splitHybridCaptcha sits right before the password). Engine must pick the email (login_email), not a captcha field, as the username. autocomplete token-list 'username webauthn'.",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true, "userName": "login_email" },
+    "findNewPasswordFields": null,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "url": "https://app.notion.com/login",
+  "kind": "login",
+  "note": "REAL: Notion login (cross-domain notion.so -> app.notion.com). Email-first flow; the password field has NO name, id, or label — matched only by type=password + autocomplete=current-password. Email matched via autocomplete=username.",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true, "userName": "notion-email-input-1" },
+    "findNewPasswordFields": null,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "url": "https://signin.ebay.com/signin/",
+  "kind": "login",
+  "note": "REAL: eBay login. autocomplete token-list 'username webauthn' on the userid field.",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true, "userName": "userid" },
+    "findNewPasswordFields": null,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

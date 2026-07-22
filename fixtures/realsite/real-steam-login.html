@@ -1,0 +1,12 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><title>Sign In</title></head><body>
+<header><form action="/search/"><input type="text" name="term" autocomplete="off" placeholder="Search the store"></form></header>
+<h1>Sign In</h1>
+<form method="post" action="/login/">
+  <input type="text" aria-label="Sign in with account name">
+  <input type="password" aria-label="Password">
+  <button type="submit">Sign in</button>
+</form>
+<div id="twofactor" style="display:none">
+  <input type="text" id="authcode" placeholder="enter your code here">
+  <input type="text" id="friendlyname" placeholder="enter a friendly name here">
+</div></body></html>

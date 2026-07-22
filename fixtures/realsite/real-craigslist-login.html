@@ -1,0 +1,15 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><title>craigslist - account log in</title></head><body>
+<h1>Log in</h1>
+<form method="post" action="/login">
+  <label for="inputEmailHandle">Email / Handle</label>
+  <input type="text" name="inputEmailHandle" id="inputEmailHandle">
+  <label for="inputPassword">Password <a href="/forgot">Forgot password?</a></label>
+  <input type="password" name="inputPassword" id="inputPassword" autocomplete="off">
+  <button type="submit">Log in</button>
+</form>
+<form method="post" action="/loginlink">
+  <label for="emailAddress">Email</label>
+  <input type="email" name="emailAddress" id="emailAddress">
+  <button type="submit">E-mail a login link</button>
+</form>
+<a href="/signup">Create account</a></body></html>

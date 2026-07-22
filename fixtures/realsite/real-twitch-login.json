@@ -1,0 +1,11 @@
+{
+  "url": "https://www.twitch.tv/login",
+  "kind": "login",
+  "note": "REAL: Twitch login. Both fields have id + autocomplete but NO name attribute — engine must key off autocomplete/id. 'Sign up' link present but not a form button.",
+  "expect": {
+    "findLoginFields": { "user": true, "pass": true, "userName": "login-username" },
+    "findNewPasswordFields": null,
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

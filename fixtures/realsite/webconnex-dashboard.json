@@ -1,0 +1,9 @@
+{
+  "url": "https://manage.webconnex.com/products?account_id=202296",
+  "kind": "login-success",
+  "note": "real: redirect-login success must classify as success (no pw field, non-auth URL)",
+  "expect": {
+    "findLoginFields": null,
+    "classifyOutcome": "success"
+  }
+}

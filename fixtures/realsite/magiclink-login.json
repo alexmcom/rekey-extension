@@ -1,0 +1,8 @@
+{
+  "url": "https://auth.example.com/login",
+  "kind": "magiclink",
+  "expect": {
+    "findLoginFields": null,
+    "classifyOutcome": "pending"
+  }
+}

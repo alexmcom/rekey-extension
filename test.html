@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Rekey self-test</title>
+<style>
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0f1115;color:#f4eef2;padding:24px;max-width:640px;margin:0 auto}
+  h1{font-size:20px}h1 b{color:#ff2e7e}
+  .sum{font-weight:700;margin:12px 0;font-size:16px}
+  .ok{color:#2fd27a}.bad{color:#ff5a5f}
+  .row{padding:5px 0;border-bottom:1px solid #2a2f3a;font-size:13px;display:flex;gap:8px}
+  .row .m{color:#9aa3b2}
+  code{color:#8fa6ff}
+</style>
+</head>
+<body>
+  <h1>RE<b>KEY</b> · self-test</h1>
+  <p style="color:#9aa3b2;font-size:13px">Runs the real crypto + logic in this browser (not a simulation). Open at <code>chrome-extension://&lt;id&gt;/test.html</code>.</p>
+  <div id="sum" class="sum">Running…</div>
+  <div id="out"></div>
+  <script type="module" src="test-browser.js"></script>
+</body>
+</html>

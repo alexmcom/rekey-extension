@@ -1,0 +1,13 @@
+{
+  "url": "https://auth.wikimedia.org/enwiki/wiki/Special:UserLogin",
+  "kind": "login",
+  "note": "REAL: MediaWiki login (token-list autocomplete 'username webauthn'; separate search form; cross-domain auth host)",
+  "expect": {
+    "findLoginFields": {
+      "user": true,
+      "pass": true
+    },
+    "detectLoginError": false,
+    "classifyOutcome": "pending"
+  }
+}

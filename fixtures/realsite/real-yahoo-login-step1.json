@@ -1,0 +1,10 @@
+{
+  "url": "https://login.yahoo.com/",
+  "kind": "login-step1",
+  "note": "REAL: multi-step login, step 1 = email only (no password). Engine must offer nothing yet, and NOT misfire (activates when the password step renders).",
+  "expect": {
+    "findLoginFields": null,
+    "findNewPasswordFields": null,
+    "classifyOutcome": "pending"
+  }
+}

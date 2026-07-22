@@ -1,0 +1,11 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><title>Log in - Wikipedia</title></head><body>
+<form id="searchform"><input type="search" name="search" placeholder="Search Wikipedia" id="searchInput"></form>
+<h1>Log in</h1>
+<form name="userlogin" method="post" action="/w/index.php">
+  <label for="wpName1">Username</label>
+  <input type="text" name="wpName" autocomplete="username webauthn" placeholder="Enter your username" id="wpName1">
+  <label for="wpPassword1">Password</label>
+  <input type="password" name="wpPassword" autocomplete="current-password" placeholder="Enter your password" id="wpPassword1">
+  <label for="wpRemember"><input type="checkbox" name="wpRemember" id="wpRemember"> Keep me logged in</label>
+  <button type="submit" name="wploginattempt">Log in</button>
+</form></body></html>

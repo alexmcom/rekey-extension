@@ -1,0 +1,9 @@
+{
+  "name": "rekey-extension",
+  "private": true,
+  "type": "module",
+  "_note": "type:module lets us unit-test core.js in Node. Chrome ignores this file when loading the extension.",
+  "dependencies": {
+    "jsdom": "^29.1.1"
+  }
+}
