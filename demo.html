@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rekey Full walkthrough</title>
+<style>
+:root{
+  --ink:#161022; --ink2:#241a36; --line:#372a4d; --muted:#a99cc2;
+  --pink:#d4438d; --pink-2:#e878b0; --violet:#9a7fd0;
+  --paper:#f6f1fb; --ok:#43c98a; --warn:#f0b64a; --danger:#ff6b70;
+  --rk-ink:#2b2145; --rk-ink-soft:#5f5378; --rk-accent:#c1509f; --rk-line:rgba(96,74,146,0.16);
+  --rk-paper:#fdfbff; --rk-ok:#1f9e63;
+}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden}
+body{background:#0d0a16;display:flex;align-items:center;justify-content:center;min-height:100vh;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+.stage{position:relative;width:1280px;height:720px;border-radius:14px;overflow:hidden;
+  box-shadow:0 30px 90px rgba(0,0,0,.55);background:#0f1418;transform:scale(var(--s,1));transform-origin:center}
+.chrome{height:52px;background:#e7e2ee;border-bottom:1px solid #d3cce0;display:flex;align-items:center;gap:12px;padding:0 16px;position:relative;z-index:5}
+.lights{display:flex;gap:8px}.lights i{width:12px;height:12px;border-radius:50%;display:block}
+.lights .r{background:#ff5f57}.lights .y{background:#febc2e}.lights .g{background:#28c840}
+.omni{flex:1;height:32px;background:#fbf9ff;border:1px solid #d9d2e8;border-radius:16px;display:flex;align-items:center;padding:0 14px;color:#5f5378;font-size:13px;gap:8px}
+.omni svg{width:13px;height:13px;flex:none;opacity:.6}
+.rkico{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#2a1c3e,#4a2c55);position:relative;box-shadow:0 0 0 2px #fff,0 0 0 3px #e7c6dd}
+.rkico::after{content:"";position:absolute;width:9px;height:9px;border:2px solid var(--pink);border-radius:50%;top:4px;left:4px}
+.rkico::before{content:"";position:absolute;width:2px;height:7px;background:var(--pink);transform:rotate(45deg);bottom:3px;right:6px}
+.rkbadge{position:absolute;top:-4px;right:-4px;background:var(--pink);color:#fff;font-size:9px;font-weight:800;width:14px;height:14px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.page{position:absolute;inset:52px 0 0 0;overflow:hidden}
+.pagebg-plain{background:radial-gradient(120% 90% at 18% -10%,#f4ecfb,#ece4f7 55%,#e7dff4)}
+.pagebg-dark{background:#0f1418}
+.pcenter{position:absolute;inset:0;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px}
+.rk-card{max-width:520px;width:100%;background:var(--rk-paper);border:1px solid rgba(96,74,146,.12);border-radius:20px;padding:30px 32px;box-shadow:0 18px 50px rgba(60,40,110,.10)}
+.brand{font-family:Georgia,serif;font-style:italic;font-size:18px;margin-bottom:2px;color:var(--rk-ink)}
+.rk-card h2{font-family:'Segoe UI',system-ui,sans-serif;font-weight:600;color:var(--rk-ink);margin:2px 0 8px;font-size:24px;letter-spacing:-.3px}
+.rk-card p{margin:0 0 6px;color:var(--rk-ink-soft);font-size:14px;line-height:1.5}
+.cur{background:rgba(255,255,255,.6);border:1px solid var(--rk-line);border-radius:12px;padding:12px 14px;margin:14px 0;font-size:15px;color:var(--rk-ink-soft)}
+.cur code{font-weight:700;color:var(--rk-accent);font-size:16px}
+.rk-card label{display:block;font-weight:600;font-size:13px;color:var(--rk-ink);margin:14px 0 5px}
+.rk-field{width:100%;font-family:inherit;font-size:16px;color:var(--rk-ink);padding:13px 15px;background:rgba(255,255,255,.75);border:1px solid var(--rk-line);border-radius:12px;outline:none;transition:.15s}
+.rk-field.focus{border-color:var(--rk-accent);box-shadow:0 0 0 3px rgba(193,80,159,.14)}
+.rk-btn{display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;width:100%;margin-top:16px;padding:13px 24px;border-radius:999px;border:none;background:var(--rk-ink);color:var(--rk-paper);cursor:pointer}
+.msg{margin-top:16px;font-weight:600;min-height:22px;font-size:15px}.msg.ok{color:var(--rk-ok)}.msg.bad{color:#c93a3a}
+.sw{position:absolute;inset:0;display:flex}
+.sw .pleft{flex:1.15;background:linear-gradient(150deg,#0a3d3a,#0e5b4e 45%,#12463f);position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:0 60px;color:#eafff7}
+.sw .pleft::after{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 80% 20%,rgba(52,211,153,.25),transparent 60%),radial-gradient(50% 40% at 10% 90%,rgba(16,185,129,.22),transparent 60%)}
+.sw .wave{position:absolute;bottom:0;left:0;right:0;height:130px;opacity:.5}
+.slogo{display:flex;align-items:center;gap:12px;position:relative;z-index:2;margin-bottom:26px}
+.slogo .mark{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#34d399,#10b981);display:flex;align-items:center;justify-content:center}
+.slogo .mark svg{width:22px;height:22px}
+.slogo .name{font-size:22px;font-weight:800;letter-spacing:-.3px}
+.sw .pleft h1{position:relative;z-index:2;font-size:38px;line-height:1.1;margin:0 0 16px;font-weight:800;letter-spacing:-1px}
+.sw .pleft p{position:relative;z-index:2;font-size:16px;color:#bfeee0;max-width:34ch;line-height:1.5;margin:0}
+.sw .pright{flex:1;background:#0f1418;display:flex;align-items:center;justify-content:center;padding:0 56px}
+.swform{width:100%;max-width:360px;color:#e8eef0}
+.swform h2{font-size:25px;margin:0 0 6px;font-weight:700;letter-spacing:-.4px}
+.swform .lede{color:#9fb0b3;font-size:14px;margin:0 0 24px}
+.swform label{display:block;font-size:12.5px;color:#9fb0b3;margin:15px 0 6px;font-weight:600}
+.fld{width:100%;padding:13px 14px;border-radius:11px;border:1px solid #263238;background:#141c20;color:#e8eef0;font-size:15px;outline:none;transition:.15s}
+.fld.focus{border-color:#34d399;box-shadow:0 0 0 3px rgba(52,211,153,.15)}
+.swerr{color:#ff6b6b;font-size:12.5px;margin-top:10px;min-height:16px;font-weight:600}
+.meter{height:5px;border-radius:99px;background:#1e2a2e;margin-top:9px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#34d399,#10b981);transition:width .5s ease}
+.mlabel{font-size:11.5px;color:#6b7a7e;margin-top:6px;min-height:14px}.mlabel.strong{color:#34d399;font-weight:700}
+.screate{width:100%;margin-top:22px;padding:14px;border:none;border-radius:11px;background:linear-gradient(135deg,#34d399,#10b981);color:#04231c;font-weight:800;font-size:15px;cursor:pointer}
+.swsuccess{position:absolute;inset:0;background:#0f1418;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0;transition:opacity .5s;pointer-events:none;z-index:6}
+.swsuccess.show{opacity:1}
+.swsuccess .check{width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#34d399,#10b981);display:flex;align-items:center;justify-content:center;font-size:38px;color:#04231c}
+.swsuccess h2{color:#e8eef0;font-size:26px;margin:6px 0 0;font-weight:800}.swsuccess p{color:#9fb0b3;font-size:15px;margin:0}
+.rkcard{position:absolute;top:16px;right:16px;width:320px;background:#14141b;color:#f5f5f7;border:1px solid #2a2a35;border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.45);padding:16px;z-index:40;opacity:0;transform:translateY(-8px);transition:opacity .2s,transform .2s}
+.rkcard.show{opacity:1;transform:none}
+.rkcard .rbrand{font-weight:800;font-size:13px;letter-spacing:.5px;margin-bottom:8px}.rkcard .rbrand .k{color:#ec4899}
+.rkcard .q{font-size:14px;line-height:1.4;margin-bottom:4px}
+.rkcard .rsite{font-weight:700}.rkcard .rsub{color:#a1a1aa;font-size:12px;margin-bottom:14px;line-height:1.4}
+.rkcard .rrow{display:flex;gap:8px}
+.rkcard button{flex:1;font-size:13px;font-weight:700;padding:9px 10px;border-radius:9px;cursor:pointer;border:1px solid transparent}
+.rkcard .go{background:#ec4899;color:#fff}.rkcard .skip{background:transparent;color:#d4d4d8;border-color:#3a3a45}
+.rkcard .done{font-size:13px;color:#34d399;font-weight:700;padding:2px 0}
+.popup{position:absolute;top:8px;right:26px;width:340px;border-radius:12px;overflow:hidden;opacity:0;transform:translateY(-10px) scale(.98);transform-origin:top right;
+  transition:opacity .3s,transform .3s cubic-bezier(.2,.9,.3,1.2);box-shadow:0 24px 60px rgba(0,0,0,.4);z-index:38;
+  background:radial-gradient(130% 80% at 50% -12%,rgba(154,127,208,.2),transparent 62%),var(--ink);color:var(--paper);font-size:14px;line-height:1.45}
+.popup.show{opacity:1;transform:none}
+.popup header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px}
+.popup .logo{font-family:Georgia,serif;font-style:italic;font-weight:500;font-size:22px;color:var(--paper)}
+.hgroup{display:flex;align-items:center;gap:8px}
+.badge{font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--pink);border:1px solid var(--pink);border-radius:999px;padding:2px 8px;text-transform:uppercase}
+.lockbtn{background:none;border:none;color:var(--muted);font-size:12px}
+.tabs{display:flex;gap:4px;padding:0 12px 8px}
+.tab{flex:1;text-align:center;padding:7px;border-radius:8px;color:var(--muted);font-weight:600;font-size:12px}
+.tab.active{background:var(--ink2);color:var(--paper)}
+.pmain{padding:6px 16px 8px}
+.gatebox{background:var(--ink2);border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-bottom:12px;font-size:12.5px;line-height:1.5;color:#c4ccdb}
+.gatebox b{color:var(--paper)}
+.plabel{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+.pinput{width:100%;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--ink2);color:var(--paper);font-size:14px}
+.hint{color:var(--muted);font-size:11.5px;margin-top:8px}
+.secretbox{font-family:ui-monospace,Menlo,monospace;font-size:13px;color:#cdd3dd;background:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px;margin-top:4px;display:flex;justify-content:space-between;gap:8px}
+.toolbar{display:flex;gap:8px;margin-bottom:6px}
+.btn{width:100%;padding:11px;border:none;border-radius:999px;background:var(--pink);color:#fff;font-weight:700;font-size:14px;cursor:pointer}
+.btn:disabled{opacity:.5}
+.btn.ghost{background:var(--ink2);border:1px solid var(--line)}
+.toolbar .btn{padding:9px;font-size:12.5px}
+.settoggle{width:100%;padding:9px;border:none;border-radius:999px;background:var(--ink2);border:1px solid var(--line);color:var(--paper);font-weight:700;font-size:12.5px;margin-bottom:8px;text-align:left;padding-left:14px}
+.setpanel{border:1px solid var(--line);border-radius:12px;padding:8px;margin-bottom:10px;background:rgba(0,0,0,.15)}
+.setrow{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.setrow span{color:var(--muted);font-size:12px;flex:1}
+.setrow select{padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--ink2);color:var(--paper);font-size:12.5px}
+.importbox,.syncbox{border:1px solid var(--line);border-radius:10px;padding:11px 12px;margin-top:8px;background:var(--ink2);font-size:12.5px;color:#c4ccdb}
+.importbox .prow{padding:4px 0;border-top:1px solid #ffffff10;display:flex;justify-content:space-between;gap:8px}
+.importbox .prow .ok{color:var(--ok)}.importbox .prow .warn{color:var(--warn)}
+.qr{width:96px;height:96px;border-radius:8px;background:
+  repeating-linear-gradient(90deg,#fff 0 6px,#161022 6px 12px),
+  repeating-linear-gradient(0deg,#fff 0 6px,#161022 6px 12px);background-blend-mode:multiply;margin:8px auto;border:5px solid #fff}
+.status{font-size:12px;color:var(--muted);margin:6px 0;min-height:16px}
+.health{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
+.hc{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:var(--ink2);color:var(--muted)}
+.hc.bad{background:rgba(255,90,95,.15);color:var(--danger)}.hc.warn{background:rgba(255,176,32,.15);color:var(--warn)}.hc.ok{background:rgba(47,210,122,.15);color:var(--ok)}
+.bulkbtn{width:100%;padding:12px;border:none;border-radius:999px;background:var(--pink);color:#fff;font-weight:700;font-size:14px;margin:0 0 10px;display:flex;align-items:center;justify-content:center;gap:6px}
+.bulkprog{border:1px solid var(--line);border-radius:10px;padding:12px 13px;margin:0 0 10px;background:var(--ink2);font-size:12.5px}
+.bulkprog .phead{font-weight:700;margin-bottom:8px}
+.bulkprog .prow{padding:5px 0;border-top:1px solid #ffffff10;color:#c4ccdb;display:flex;justify-content:space-between;gap:8px}
+.bulkprog .prow .ok{color:var(--ok)}.bulkprog .prow .run{color:var(--muted)}
+.acct{border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin:8px 0;background:var(--ink2)}
+.acct .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.sitehead{display:flex;align-items:center;gap:10px;min-width:0}
+.favmono{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:13px;background:linear-gradient(135deg,#6d4b8f,#9a7fd0)}
+.site{font-weight:700}.user{color:var(--muted);font-size:12px}
+.pill{font-size:10px;font-weight:700;padding:2px 7px;border-radius:999px;text-transform:uppercase;letter-spacing:.4px}
+.pill.safe,.pill.fresh{background:rgba(47,210,122,.15);color:var(--ok)}
+.pill.breached{background:rgba(255,90,95,.15);color:var(--danger)}
+.pill.unknown{background:rgba(154,163,178,.15);color:var(--muted)}
+.secret{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:#cdd3dd;background:var(--ink);border:1px solid var(--line);border-radius:6px;padding:6px 8px;margin-top:8px;display:flex;justify-content:space-between;gap:8px}
+.link{color:var(--pink);font-size:11.5px;font-weight:600;background:none;border:none}
+.breachnote{color:var(--danger);font-size:12px;margin-top:7px;font-weight:600}
+.safenote{color:var(--ok);font-size:12px;margin-top:7px;font-weight:600}
+.reusednote{color:var(--warn);font-size:12px;margin-top:7px;font-weight:600}
+.suspectnote{color:var(--warn);font-size:12px;margin-top:7px;font-weight:600}
+.linknote{color:#8fa6ff;font-size:12px;margin-top:7px;font-weight:600}
+.acct .actions{display:flex;gap:8px;margin-top:9px}.acct .actions .btn{font-size:12.5px;padding:8px}
+.acardstatus{font-size:12px;color:#cdd3dd;margin-top:8px}.acardstatus .ok{color:var(--ok);font-weight:700}.acardstatus .step{color:#cdd3dd}
+.moreline{text-align:right;margin-top:8px}.moreline .link{margin-left:8px}
+.rcpt{border-left:2px solid var(--pink);padding:8px 10px;margin:8px 0;background:var(--ink2);border-radius:0 8px 8px 0}
+.rcpt .t{font-size:11px;color:var(--muted)}.rcpt .m{font-family:ui-monospace,Menlo,monospace;font-size:11.5px;color:#cdd3dd;margin-top:3px}
+.pfooter{border-top:1px solid var(--line);padding:9px 16px;color:var(--muted);font-size:11px;text-align:center}
+.hidden{display:none}
+.cursor{position:absolute;width:22px;height:22px;z-index:50;left:640px;top:400px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4));transition:left .65s cubic-bezier(.5,0,.2,1),top .65s cubic-bezier(.5,0,.2,1);pointer-events:none}
+.cursor.click{animation:clk .3s ease}@keyframes clk{0%,100%{transform:scale(1)}45%{transform:scale(.8)}}
+.ripple{position:absolute;z-index:49;width:12px;height:12px;border-radius:50%;background:rgba(212,67,141,.5);transform:translate(-50%,-50%) scale(0);pointer-events:none}
+.ripple.go{animation:rip .5s ease-out}@keyframes rip{0%{transform:translate(-50%,-50%) scale(0);opacity:.7}100%{transform:translate(-50%,-50%) scale(5);opacity:0}}
+.caption{position:absolute;left:50%;bottom:30px;transform:translateX(-50%) translateY(12px);z-index:60;background:rgba(16,10,24,.9);color:#fff;font-size:19px;font-weight:600;padding:12px 22px;border-radius:12px;opacity:0;transition:opacity .4s,transform .4s;box-shadow:0 8px 30px rgba(0,0,0,.4);max-width:82%;text-align:center}
+.caption.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.caption .sub{display:block;font-size:12px;font-weight:500;color:#b9a9cc;margin-top:3px}
+.chapter{position:absolute;inset:0;z-index:65;background:radial-gradient(120% 90% at 50% 40%,#1c1330,#0d0a16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0;transition:opacity .45s;pointer-events:none}
+.chapter.show{opacity:1}
+.chapter .cnum{font-size:14px;font-weight:800;letter-spacing:3px;color:var(--pink);text-transform:uppercase}
+.chapter .ctitle{font-family:Georgia,serif;font-style:italic;font-size:42px;color:#fff;text-align:center;max-width:74%;line-height:1.15}
+.endcard{position:absolute;inset:0;z-index:70;background:radial-gradient(120% 90% at 50% 30%,#1c1330,#0d0a16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;transition:opacity .6s;pointer-events:none}
+.endcard.show{opacity:1}
+.endcard .ename{font-family:Georgia,serif;font-style:italic;font-size:56px;color:#fff}
+.endcard .etag{font-size:21px;color:#d9cbe9;font-weight:500;text-align:center;max-width:72%;line-height:1.4}
+.endcard .eurl{margin-top:8px;font-size:16px;color:var(--pink);font-weight:700;letter-spacing:.5px}
+.replay{position:absolute;right:16px;bottom:14px;z-index:80;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;opacity:0;transition:opacity .3s}
+.replay.show{opacity:1}
+.progress{position:absolute;top:0;left:0;height:3px;background:var(--pink);width:0;z-index:90;transition:width .3s linear}
+.gate{position:absolute;inset:0;z-index:85;background:radial-gradient(120% 90% at 50% 35%,#1c1330,#0d0a16);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;cursor:pointer}
+.gate.hidden{display:none}
+.gate .ptitle{font-family:Georgia,serif;font-style:italic;font-size:30px;color:#fff}
+.gate .pbtn{width:88px;height:88px;border-radius:50%;background:var(--pink);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 40px rgba(212,67,141,.5);transition:transform .2s}
+.gate:hover .pbtn{transform:scale(1.06)}
+.gate .pbtn svg{width:34px;height:34px;margin-left:5px}
+.gate .psub{font-size:14px;color:#b9a9cc}
+.stage.pfs{position:fixed;top:50%;left:50%;z-index:99999;border-radius:0}
+#pfsback{position:fixed;inset:0;background:#0d0a16;z-index:99998;display:none}
+#pfsback.show{display:block}
+.ctrls{position:absolute;bottom:14px;left:16px;z-index:82;display:none;gap:8px}
+.ctrls.show{display:flex}
+.ctrls button{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:999px;
+  min-width:38px;height:34px;padding:0 12px;font-size:13px;font-weight:700;cursor:pointer;line-height:1;
+  display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.ctrls button:hover{background:rgba(255,255,255,.24)}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="progress" id="progress"></div>
+  <div class="chrome">
+    <div class="lights"><i class="r"></i><i class="y"></i><i class="g"></i></div>
+    <div class="omni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span id="omniUrl">getrekey.com</span></div>
+    <div class="rkico"><span class="rkbadge" id="rkbadge">1</span></div>
+  </div>
+  <div class="page" id="page"></div>
+  <div class="rkcard" id="rkcard"><div id="rkbody"></div></div>
+  <div class="popup" id="popup"><div id="popupInner"></div></div>
+  <div class="ripple" id="ripple"></div>
+  <svg class="cursor" id="cursor" viewBox="0 0 24 24"><path d="M5 2l14 11-6 1 4 7-3 1-4-7-5 4z" fill="#fff" stroke="#222" stroke-width="1.3" stroke-linejoin="round"/></svg>
+  <div class="caption" id="caption"></div>
+  <div class="chapter" id="chapter"><div class="cnum" id="cnum"></div><div class="ctitle" id="ctitle"></div></div>
+  <div class="endcard" id="endcard">
+    <div class="ename">Rekey</div>
+    <div class="etag">Sets up in a minute. Generates, fills, and gets your breached passwords fixed, guided and never locked out.</div>
+    <div class="eurl">getrekey.com</div>
+  </div>
+  <button class="replay" id="replay" onclick="play()">↻ Replay</button>
+  <div class="ctrls" id="ctrls">
+    <button id="ppBtn" title="Pause / play" onclick="togglePause()">❙❙</button>
+    <button id="restartBtn" title="Restart" onclick="play()">↻</button>
+    <button id="fsBtn" title="Full screen" onclick="toggleFullscreen()">⛶</button>
+  </div>
+  <div id="pfsback"></div>
+  <div class="gate" id="gate" onclick="startShow()">
+    <div class="ptitle">Rekey · a 2-minute tour</div>
+    <div class="pbtn"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>
+    <div class="psub">Click to play with sound</div>
+  </div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+/* pausable clock: every delay is registered so Pause can freeze the whole timeline */
+let paused=false; const _timers=new Set();
+function wait(ms){return new Promise(resolve=>{
+  const rec={remaining:ms,last:Date.now(),id:null,resolve};
+  rec.arm=()=>{rec.last=Date.now();rec.id=setTimeout(()=>{_timers.delete(rec);resolve();},rec.remaining);};
+  rec.hold=()=>{if(rec.id){clearTimeout(rec.id);rec.remaining-=Date.now()-rec.last;rec.id=null;}};
+  _timers.add(rec); if(!paused)rec.arm();
+});}
+let curVo=null;
+function pauseTour(){if(paused||!running)return;paused=true;_timers.forEach(t=>t.hold());try{if(MUSIC)MUSIC.pause();}catch(_){}try{if(curVo)curVo.pause();}catch(_){}
+  const b=$('ppBtn');if(b)b.textContent='▶';}
+function resumeTour(){if(!paused)return;paused=false;_timers.forEach(t=>t.arm());try{if(MUSIC)MUSIC.play();}catch(_){}try{if(curVo)curVo.play();}catch(_){}
+  const b=$('ppBtn');if(b)b.textContent='❙❙';}
+function togglePause(){paused?resumeTour():pauseTour();}
+async function moveTo(x,y,ms=600){const c=$('cursor');c.style.transition=`left ${ms}ms cubic-bezier(.5,0,.2,1),top ${ms}ms cubic-bezier(.5,0,.2,1)`;c.style.left=x+'px';c.style.top=y+'px';await wait(ms);}
+async function clickFx(){const c=$('cursor');const x=parseFloat(c.style.left),y=parseFloat(c.style.top);const r=$('ripple');r.style.left=x+'px';r.style.top=y+'px';r.classList.remove('go');void r.offsetWidth;r.classList.add('go');c.classList.remove('click');void c.offsetWidth;c.classList.add('click');await wait(280);}
+async function clickEl(sel,ms=600){const el=typeof sel==='string'?document.querySelector(sel):sel;if(!el)return;const c=centre(el);await moveTo(c[0],c[1],ms);await clickFx();}
+function caption(html){const el=$('caption');el.innerHTML=html;el.classList.add('show');}
+function hideCap(){$('caption').classList.remove('show');}
+function centre(el){const s=$('stage').getBoundingClientRect();const r=el.getBoundingClientRect();const sc=s.width/1280;return[(r.left-s.left)/sc+(r.width/sc)/2,(r.top-s.top)/sc+(r.height/sc)/2];}
+async function typeInto(el,text,ms=42){el.type='text';el.value='';for(const ch of text){el.value+=ch;await wait(ms);}}
+async function typePw(el,text,ms=34){el.type='text';el.value='';for(const ch of text){el.value+=ch;await wait(ms);}el.type='password';}
+async function chapter(num,title){const ch=$('chapter');$('cnum').textContent=num;$('ctitle').textContent=title;ch.classList.add('show');await wait(1400);ch.classList.remove('show');await wait(430);}
+function setUrl(u){$('omniUrl').textContent=u;}
+function prog(p){$('progress').style.width=p+'%';}
+
+/* ---------- vault state + render ---------- */
+let VAULT=[];
+function seedVault(){
+  VAULT=[
+    {site:'getrekey.com',user:'alex@example.com',secret:'pa••••••••rd',status:'unknown',breach:'52,372,427',rotated:'never',weak:true},
+    {site:'linkedin.com',user:'alex@example.com',secret:'Sunshine2019',status:'unknown',rotated:'never',reused:true,breach:'164,000,000'},
+    {site:'dropbox.com',user:'alex@example.com',secret:'Sunshine2019',status:'unknown',rotated:'never',reused:true,breach:'68,000,000'},
+    {site:'soundwave.fm',user:'you@email.com',secret:'q7$Lm••••Zk2R',status:'fresh',rotated:'just now',grad:'background:linear-gradient(135deg,#34d399,#10b981)'},
+    {site:'github.com',user:'alex@example.com',secret:'^!vcVM••••2&L',status:'safe',rotated:'never'},
+    {site:'oldforum.net',user:'alex@example.com',secret:'dragon',status:'unknown',rotated:'never',weak:true},
+  ];
+}
+function acctCard(a){
+  const label=a.status==='breached'?'breached':a.status==='safe'?'safe':a.status==='fresh'?'fresh':'not checked';
+  let note='';
+  if(a.status==='breached')note+=`<div class="breachnote">⚠ Found in ${a.breach} known breaches. Change it now.</div>`;
+  else if(a.status==='safe')note+=`<div class="safenote">✓ Not found in known breaches.</div>`;
+  else if(a.status==='fresh')note+=`<div class="safenote">✓ Strong password · just created</div>`;
+  if(a.reused)note+=`<div class="reusednote">⚠ Reused password. It’s on more than one account.</div>`;
+  if(a.weak)note+=`<div class="reusednote">⚠ Weak password. Too short or simple. Change it.</div>`;
+  if(a.suspect)note+=`<div class="suspectnote">⚠ This saved password looks wrong. The site rejected it, so Rekey won’t autofill it until you sign in with the right one.</div>`;
+  if(a.linkHost)note+=`<div class="linknote">🔗 Also signs in at: ${a.linkHost}</div>`;
+  return `<div class="acct" data-site="${a.site}">
+    <div class="row"><div class="sitehead"><div class="favmono" style="${a.grad||''}">${a.site[0].toUpperCase()}</div>
+      <div><div class="site">${a.site}</div><div class="user">${a.user}</div></div></div>
+      <span class="pill ${a.status}" data-pill>${label}</span></div>
+    <div class="secret"><span>${a.secret}</span><span style="display:flex;gap:10px"><button class="link">Copy</button><button class="link">Reveal</button></span></div>
+    <div data-note>${note}</div>
+    <div class="user" style="margin-top:6px">Last rotated: ${a.rotated}</div>
+    <div class="actions"><button class="btn rotate">Change password</button></div>
+    <div class="acardstatus" data-status></div>
+    <div class="moreline"><button class="link">More ▾</button><button class="link">Edit</button><button class="link" style="color:var(--muted)">Remove</button></div>
+  </div>`;
+}
+function renderHealth(){
+  const n=VAULT.length,b=VAULT.filter(a=>a.status==='breached').length,r=VAULT.filter(a=>a.reused).length,w=VAULT.filter(a=>a.weak).length;
+  let h=`<span class="hc">${n} accounts</span>`;
+  if(b)h+=`<span class="hc bad">${b} breached</span>`;
+  if(r)h+=`<span class="hc warn">${r} reused</span>`;
+  if(w)h+=`<span class="hc warn">${w} weak</span>`;
+  if(!b&&!r&&!w)h+=`<span class="hc ok">all healthy</span>`;
+  const el=$('health');if(el)el.innerHTML=h;
+}
+function renderVault(){
+  $('popupInner').innerHTML=`
+    <header><div class="logo">Rekey</div><div class="hgroup"><span class="badge">Beta</span><button class="lockbtn">🔒 Lock</button></div></header>
+    <div class="tabs"><div class="tab active" id="tVault">Accounts</div><div class="tab" id="tHist">History</div></div>
+    <div class="pmain">
+      <div id="vaultView">
+        <div class="toolbar"><button class="btn ghost" id="scanBtn">Scan for breaches</button><button class="btn">+ Add account</button></div>
+        <button class="settoggle" id="setToggle">⚙ Settings &amp; backup ▾</button>
+        <div class="setpanel hidden" id="setPanel">
+          <div class="toolbar"><button class="btn ghost" style="flex:1" id="importBtn">⬇ Import from Chrome / CSV</button></div>
+          <div id="importBox"></div>
+          <div class="toolbar"><button class="btn ghost">⬆ Export backup</button><button class="btn ghost">↺ Restore backup</button></div>
+          <div class="setrow"><span>Auto-lock after</span><select><option>5 min</option><option>15 min</option><option selected>30 min</option><option>Never</option></select></div>
+          <div class="toolbar"><button class="btn ghost">Change master password</button><button class="btn ghost">🔑 New recovery key</button></div>
+          <div class="toolbar"><button class="btn ghost" style="flex:1" id="syncBtn">☁ Sync &amp; devices</button></div>
+          <div id="syncBox"></div>
+        </div>
+        <div class="status" id="scanStatus"></div>
+        <div class="health" id="health"></div>
+        <div id="bulkBar"></div>
+        <div id="bulkProg"></div>
+        <div id="cards">${VAULT.map(acctCard).join('')}</div>
+      </div>
+      <div id="histView" class="hidden">
+        <div class="rcpt"><div class="t">getrekey.com · just now</div><div class="m">✓ new password confirmed working</div><div class="m">old password retired</div></div>
+        <div class="rcpt"><div class="t">linkedin.com · just now</div><div class="m">✓ new password confirmed working</div></div>
+        <div class="rcpt"><div class="t">dropbox.com · just now</div><div class="m">✓ new password confirmed working</div></div>
+        <div class="rcpt" style="opacity:.7"><div class="t">soundwave.fm · today</div><div class="m">✓ account created + saved</div></div>
+      </div>
+    </div>
+    <div class="pfooter">Local-first · encrypted on your device · your passwords never leave it</div>`;
+  renderHealth();
+}
+function refreshCards(){const el=$('cards');if(el)el.innerHTML=VAULT.map(acctCard).join('');}
+function tab(which){
+  $('tVault').classList.toggle('active',which==='vault');$('tHist').classList.toggle('active',which==='hist');
+  $('vaultView').classList.toggle('hidden',which!=='vault');$('histView').classList.toggle('hidden',which!=='hist');
+}
+
+/* ---------- setup popup (first run) ---------- */
+function renderSetup(){
+  $('popupInner').innerHTML=`
+    <header><div class="logo">Rekey</div><span class="badge">Beta</span></header>
+    <div class="pmain">
+      <div class="gatebox"><b>Rekey finds passwords caught in data breaches and walks you through fixing each one.</b> It keeps the old one working until the new one is confirmed. Not just another vault.</div>
+      <label class="plabel">Create a master password</label>
+      <input autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" class="pinput" id="mp1" type="password" placeholder="Choose a strong master password">
+      <label class="plabel">Confirm master password</label>
+      <input autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" class="pinput" id="mp2" type="password" placeholder="Type it again">
+      <button class="btn" id="createBtn" style="margin-top:12px">Create my encrypted vault</button>
+      <div class="hint">This encrypts everything on your device. Next you’ll get a recovery kit.</div>
+    </div>
+    <div class="pfooter">Local-first · encrypted on your device · your passwords never leave it</div>`;
+}
+function renderKit(){
+  $('popupInner').innerHTML=`
+    <header><div class="logo">Rekey</div><span class="badge">Beta</span></header>
+    <div class="pmain">
+      <label class="plabel" style="font-size:15px;color:var(--paper)">🔑 Save your recovery kit</label>
+      <div class="hint" style="margin-top:6px">If you ever reinstall Rekey or forget your master password, this kit is the only way back. It’s encrypted, safe to store anywhere.</div>
+      <label class="plabel" style="margin-top:12px">Your recovery key</label>
+      <div class="secretbox"><span>RK-8FJ2Q-ZK4M9-BX7TL-QP3VN</span><button class="link">Copy</button></div>
+      <button class="btn ghost" id="kitDl" style="margin-top:12px">⬇ Download recovery kit (backup file)</button>
+      <label class="plabel" style="display:flex;gap:8px;align-items:flex-start;margin-top:14px;color:var(--muted)"><input type="checkbox" id="kitAck" style="width:auto;margin-top:2px"> I’ve saved my recovery key somewhere safe.</label>
+      <button class="btn" id="kitDone" style="margin-top:8px">Enter my vault</button>
+    </div>
+    <div class="pfooter">Local-first · encrypted on your device · your passwords never leave it</div>`;
+}
+
+/* ---------- page renderers ---------- */
+function pageBlank(){$('page').className='page pagebg-plain';$('page').innerHTML='';}
+function pageGetrekey(){$('page').className='page pagebg-plain';$('page').innerHTML=`
+  <div style="position:absolute;top:18px;left:50%;transform:translateX(-50%);width:min(1080px,90%);display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.72);border:1px solid var(--rk-line);border-radius:999px;padding:12px 24px">
+    <div style="font-family:Georgia,serif;font-style:italic;font-size:22px;color:var(--rk-ink)">Rekey</div>
+    <div style="display:flex;gap:26px;color:var(--rk-ink-soft);font-size:14px;font-weight:600"><span>How it works</span><span>Security</span><span>Pricing</span></div>
+    <div style="background:var(--rk-ink);color:#fff;font-size:13px;font-weight:700;padding:10px 20px;border-radius:999px">Get the extension</div>
+  </div>
+  <div style="position:absolute;top:168px;left:72px;max-width:640px">
+    <div style="font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--rk-accent);margin-bottom:16px">Chrome extension · private beta</div>
+    <div style="font-family:Georgia,serif;font-size:58px;line-height:1.05;color:var(--rk-ink);letter-spacing:-1px">Fixes breaches.<br><span style="font-style:italic;color:var(--rk-accent)">Not just flags them.</span></div>
+    <div style="font-size:18px;color:var(--rk-ink-soft);line-height:1.55;margin-top:22px;max-width:32ch">Rekey finds the logins caught in data breaches and gets each one fixed, guided and never locked out. Local-first.</div>
+    <div style="display:flex;gap:12px;margin-top:28px">
+      <div style="background:var(--rk-accent);color:#fff;font-weight:700;padding:14px 26px;border-radius:999px">Add to Chrome</div>
+      <div style="background:rgba(255,255,255,.6);border:1px solid var(--rk-line);color:var(--rk-ink);font-weight:700;padding:14px 26px;border-radius:999px">Watch it work</div>
+    </div>
+  </div>`;}
+function swShell(inner){return `<div class="sw"><div class="pleft">
+    <div class="slogo"><div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#04231c" stroke-width="2.4" stroke-linecap="round"><path d="M3 12h2M8 12h1M12 5v14M16 8v8M20 11v2"/></svg></div><div class="name">Soundwave</div></div>
+    ${inner.left}
+    <svg class="wave" viewBox="0 0 1200 130" preserveAspectRatio="none"><path d="M0,80 C150,20 300,120 450,70 C600,20 750,110 900,60 C1050,20 1200,90 1200,90 L1200,130 L0,130 Z" fill="#34d399"/></svg>
+  </div><div class="pright">${inner.right}</div></div>`;}
+function pageSignup(){$('page').className='page pagebg-dark';$('page').innerHTML=swShell({
+  left:`<h1>Your sound,<br>everywhere.</h1><p>Millions of tracks, zero ads on Premium. Create your free account.</p>`,
+  right:`<div class="swform" id="swform"><h2>Create your account</h2><div class="lede">Free forever. Upgrade anytime.</div>
+    <label>Email address</label><input autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" class="fld" id="fEmail" type="text" placeholder="you@email.com">
+    <label>Password</label><input autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" class="fld" id="fPass" type="password" placeholder="Create a password">
+    <div class="meter"><i id="meterBar"></i></div><div class="mlabel" id="meterLabel"></div>
+    <button class="screate" id="createAcct">Create account</button></div>
+    <div class="swsuccess" id="swsuccess"><div class="check">✓</div><h2>Welcome to Soundwave</h2><p>Your account is ready.</p></div>`});}
+function pageLogin(){$('page').className='page pagebg-dark';$('page').innerHTML=swShell({
+  left:`<h1>Welcome back.</h1><p>Pick up right where you left off.</p>`,
+  right:`<div class="swform" id="swform"><h2>Log in</h2><div class="lede">Good to see you again.</div>
+    <label>Email address</label><input autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" class="fld" id="lEmail" type="text" placeholder="you@email.com">
+    <label>Password</label><input autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" class="fld" id="lPass" type="password" placeholder="Password">
+    <button class="screate" id="loginBtn" style="margin-top:20px">Log in</button>
+    <div class="swerr" id="lErr"></div></div>
+    <div class="swsuccess" id="swsuccess"><div class="check">♪</div><h2>You’re in</h2><p>Loading your library…</p></div>`});}
+function pagePractice(){$('page').className='page pagebg-plain';$('page').innerHTML=`<div class="pcenter"><div class="rk-card">
+  <div class="brand">Rekey · practice page</div><h2>Change-password sandbox</h2>
+  <p>A safe, fake change-password form for testing Rekey’s rotation. Nothing here is a real account.</p>
+  <div class="cur">This account’s current password is:<br><code id="curpw">password</code></div>
+  <label>Current password</label><input autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" class="rk-field" id="cCur" type="password" placeholder="Current password">
+  <label>New password</label><input autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" class="rk-field" id="cNew" type="password" placeholder="New password">
+  <label>Confirm new password</label><input autocomplete="off" data-1p-ignore data-lpignore="true" data-bwignore data-form-type="other" class="rk-field" id="cCon" type="password" placeholder="Confirm new password">
+  <button class="rk-btn" id="cBtn">Change password</button><div class="msg" id="cMsg"></div></div></div>`;}
+
+/* on-page prompt */
+function showCard(title,site,sub,go){$('rkbody').innerHTML=`
+  <button class="skip" style="position:absolute;top:10px;right:12px;background:none;border:none;color:#71717a;font-size:16px;flex:none;padding:2px 4px">×</button>
+  <div class="rbrand">RE<span class="k">KEY</span></div>
+  <div class="q">${title}</div><div class="rsite">${site}</div><div class="rsub">${sub}</div>
+  <div class="rrow"><button class="go" id="rkGo">${go}</button><button class="skip">Not now</button></div>`;
+  $('rkcard').classList.add('show');}
+function cardDone(t){$('rkbody').innerHTML=`<div class="rbrand">RE<span class="k">KEY</span></div><div class="done">${t}</div>`;}
+function hideCard(){$('rkcard').classList.remove('show');}
+
+/* ---------- audio ---------- */
+const AUD={};
+function preloadAudio(){for(let i=1;i<=24;i++){const k=String(i).padStart(2,'0');const a=new Audio('demo-audio/vo'+k+'.mp3');a.preload='auto';AUD[i]=a;}}
+let MUSIC=null;
+function startMusic(){try{if(!MUSIC){MUSIC=new Audio('demo-audio/music-bed.mp3');MUSIC.loop=false;}MUSIC.volume=0.14;MUSIC.currentTime=0;MUSIC.play().catch(()=>{});}catch(_){}}
+function stopMusic(){try{if(MUSIC)MUSIC.pause();}catch(_){}}
+function fadeOutMusic(ms){return new Promise(res=>{if(!MUSIC){res();return;}const v0=MUSIC.volume,steps=20,dt=ms/steps;let i=0;const t=setInterval(()=>{i++;try{MUSIC.volume=Math.max(0,v0*(1-i/steps));}catch(_){}if(i>=steps){clearInterval(t);try{MUSIC.pause();}catch(_){}res();}},dt);});}
+function stopAllVo(){for(const k in AUD){try{AUD[k].pause();AUD[k].currentTime=0;}catch(_){}}}
+/* say(n): play clip n, resolve when it finishes (hard cap 16s so a missing file never stalls) */
+function say(n){const a=AUD[n];if(!a)return wait(400);try{a.currentTime=0;}catch(_){}curVo=a;return new Promise(res=>{let done=false;const fin=()=>{if(!done){done=true;if(curVo===a)curVo=null;res();}};a.onended=fin;a.play().then(()=>{}).catch(fin);setTimeout(fin,16000);});}
+/* line(n, capHtml, work): show caption, run optional async visual work, keep the scene until the
+   narration clip has finished - so every beat lands on the words regardless of clip length. */
+async function line(n,cap,work){const d=say(n);if(cap)caption(cap);if(work)await work();await d;}
+
+/* ---------- THE TOUR (voice-driven) ---------- */
+let running=false;
+function startShow(){$('gate').classList.add('hidden');$('ctrls').classList.add('show');preloadAudio();startMusic();play();}
+let pseudoFS=false;
+function toggleFullscreen(){const el=$('stage');
+  const canFS=(el.requestFullscreen&&document.fullscreenEnabled)||el.webkitRequestFullscreen;
+  if(canFS&&!pseudoFS){
+    try{if(document.fullscreenElement){document.exitFullscreen();}else{(el.requestFullscreen||el.webkitRequestFullscreen).call(el);}}catch(_){setPseudo(!pseudoFS);}
+  } else { setPseudo(!pseudoFS); }
+}
+/* iOS Safari blocks real fullscreen for non-video elements. Fake it: fix the stage over the
+   whole viewport (rotated to landscape on a portrait phone) so it's big and readable there too. */
+function setPseudo(on){pseudoFS=on;$('stage').classList.toggle('pfs',on);$('pfsback').classList.toggle('show',on);fit();}
+document.addEventListener('fullscreenchange',fit);
+document.addEventListener('webkitfullscreenchange',fit);
+window.addEventListener('orientationchange',()=>setTimeout(fit,120));
+async function play(){
+  if(running)return;running=true;
+  stopAllVo();if(!MUSIC)startMusic();else startMusic();
+  $('endcard').classList.remove('show');$('replay').classList.remove('show');
+  hideCap();hideCard();$('popup').classList.remove('show');prog(0);
+  $('cursor').style.left='640px';$('cursor').style.top='400px';seedVault();
+  await wait(300);
+
+  /* CH1 - SETUP + RECOVERY KIT */
+  { const d=say(1); await chapter('Chapter 1','Set up in a minute. Zero knowledge.');prog(9);
+    setUrl('getrekey.com');pageGetrekey();caption('First run: pick one master password.');
+    await moveTo(1150,26);await clickFx();renderSetup();$('popup').classList.add('show');await d; }
+  await line(2,'Everything’s encrypted on your device. Rekey never sees it.',async()=>{
+    await clickEl('#mp1');$('mp1').classList.add('focus');await typePw($('mp1'),'••••••••••',60);
+    await clickEl('#mp2');await typePw($('mp2'),'••••••••••',60);await clickEl('#createBtn');await wait(400);renderKit();
+  });
+  await line(3,'You get a recovery kit, so you’re never locked out.',async()=>{
+    await clickEl('#kitAck');$('kitAck')&&($('kitAck').checked=true);await clickEl('#kitDone');renderVault();
+  });
+  hideCap();$('popup').classList.remove('show');await wait(250);
+
+  /* CH2 - SIGNUP */
+  { const d=say(4); await chapter('Chapter 2','A strong password on every signup');prog(20);
+    setUrl('soundwave.fm/signup');pageSignup();caption('Signing up for a new site.');
+    await clickEl('#fEmail');$('fEmail').classList.add('focus');await typeInto($('fEmail'),'you@email.com');$('fEmail').classList.remove('focus');await d; }
+  await line(5,'Rekey offers to generate a strong one.',async()=>{
+    await clickEl('#fPass');$('fPass').classList.add('focus');
+    showCard('Fill a new strong password?','soundwave.fm','Rekey generates a strong one. On a new site it saves only once you finish signing up.','Generate &amp; fill');
+  });
+  await line(6,'Filled, and the meter says strong.',async()=>{
+    await clickEl('#rkGo');await typePw($('fPass'),'q7$Lm4xZ!nKzR',26);$('fPass').classList.remove('focus');
+    $('meterBar').style.width='100%';$('meterLabel').textContent='Strong password';$('meterLabel').className='mlabel strong';cardDone('✓ Filled');
+  });
+  hideCard();
+  await line(7,'Finish signing up, and Rekey saves it for you.',async()=>{
+    await clickEl('#createAcct');$('swform').classList.add('hidden');$('swsuccess').classList.add('show');await wait(700);
+    showCard('Save this login to Rekey?','soundwave.fm','you@email.com','Save login');await wait(500);
+    await clickEl('#rkGo');cardDone('✓ Saved to Rekey');
+  });
+  hideCard();hideCap();await wait(200);
+
+  /* CH3 - INSTANT LOGIN */
+  { const d=say(8); await chapter('Chapter 3','Instant login, everywhere');prog(31);
+    setUrl('soundwave.fm/login');pageLogin();await d; }
+  await line(9,'Email and password, filled in one click.',async()=>{
+    await clickEl('#lEmail');$('lEmail').classList.add('focus');
+    showCard('Fill your saved login?','soundwave.fm','you@email.com','Fill');await wait(600);
+    await clickEl('#rkGo');$('lEmail').type='text';$('lEmail').value='you@email.com';$('lEmail').classList.remove('focus');
+    await typePw($('lPass'),'q7$Lm4xZ!nKzR',22);cardDone('✓ Filled');
+  });
+  hideCard();await clickEl('#loginBtn');$('swform').classList.add('hidden');$('swsuccess').classList.add('show');hideCap();await wait(200);
+
+  /* CH4 - SUSPECT-PASSWORD HEALING */
+  { const d=say(10); await chapter('Chapter 4','Catches a bad password, then fixes it');prog(43);
+    setUrl('oldforum.net/login');pageLogin();
+    document.querySelector('.pleft h1').innerHTML='Old Forum';document.querySelector('#swform h2').textContent='Sign in';
+    caption('On another site, Rekey fills your saved login.');
+    await clickEl('#lEmail');$('lEmail').type='text';$('lEmail').value='alex@example.com';await typePw($('lPass'),'dragon',40);await d; }
+  await line(11,'But the site rejects it. That saved password was out of date.',async()=>{
+    await clickEl('#loginBtn');$('lErr').textContent='Incorrect password. Please try again.';await wait(500);
+  });
+  await line(12,'Rekey flags it and stops autofilling it. No silent failures.',async()=>{
+    await moveTo(1150,26);await clickFx();VAULT.find(a=>a.site==='oldforum.net').suspect=true;renderVault();$('popup').classList.add('show');
+  });
+  await line(13,'Sign in with the right one, and Rekey heals it for you.',async()=>{
+    $('popup').classList.remove('show');await wait(300);$('lErr').textContent='';
+    await clickEl('#lPass');await typePw($('lPass'),'Thunder!47xQ',30);await clickEl('#loginBtn');
+    $('swform').classList.add('hidden');$('swsuccess').classList.add('show');
+    const of=VAULT.find(a=>a.site==='oldforum.net');of.suspect=false;of.weak=false;of.secret='Thunder!••••xQ';of.status='safe';of.rotated='just now';
+  });
+  hideCap();await wait(150);
+
+  /* CH5 - VAULT, IMPORT, SYNC */
+  { const d=say(14); await chapter('Chapter 5','One vault. Import, back up, sync.');prog(56);
+    setUrl('getrekey.com');pageGetrekey();renderVault();caption('Everything in one encrypted vault.');
+    await moveTo(1150,26);await clickFx();$('popup').classList.add('show');await d; }
+  await line(15,'Bring your Chrome passwords over in one click.',async()=>{
+    await clickEl('#setToggle');$('setPanel').classList.remove('hidden');await clickEl('#importBtn');
+    $('importBox').innerHTML='<div class="importbox"><div class="prow"><span>Reading Chrome export…</span><span class="run">…</span></div></div>';await wait(700);
+    $('importBox').innerHTML='<div class="importbox"><div class="prow"><span>Imported 42 logins</span><span class="ok">✓</span></div><div class="prow"><span>Breached passwords found</span><span class="warn">7</span></div></div>';
+  });
+  await line(16,'Pair another device. End-to-end encrypted, no account needed.',async()=>{
+    await clickEl('#syncBtn');
+    $('syncBox').innerHTML='<div class="syncbox" style="text-align:center"><div class="qr"></div>Scan on your phone to pair.<br>Vault stays end-to-end encrypted.</div>';
+  });
+  $('syncBox').innerHTML='';await clickEl('#setToggle');$('setPanel').classList.add('hidden');hideCap();await wait(150);
+
+  /* CH6 - BREACH SCAN */
+  { const d=say(17); await chapter('Chapter 6','Knows the moment you’re breached');prog(68);await d; }
+  await line(18,'One scan checks every password against real breach data.',async()=>{
+    await clickEl('#scanBtn');$('scanStatus').textContent='Scanning 6 accounts…';await wait(900);
+  });
+  await line(19,'Three of these turned up in known breaches.',async()=>{
+    VAULT[0].status='breached';VAULT[1].status='breached';VAULT[2].status='breached';VAULT[4].status='safe';refreshCards();renderHealth();
+    $('scanStatus').innerHTML='<span class="breachnote">⚠ 3 of 6 passwords found in known breaches.</span>';
+    $('bulkBar').innerHTML='<button class="bulkbtn" id="bulkBtn">⚡ Change all 3 breached passwords</button>';
+  });
+  hideCap();await wait(150);
+
+  /* CH7 - CHANGE ALL BREACHED */
+  { const d=say(20); await chapter('Chapter 7','Fix every breach, guided. No lockout.');prog(80);
+    caption('Rekey opens each change page and hands you a fresh strong password.<span class="sub">rotation shown on our practice sandbox</span>');
+    await clickEl('#bulkBtn');$('bulkBar').innerHTML='';await d; }
+  const breached=['getrekey.com','linkedin.com','dropbox.com'];
+  const rows=breached.map(s=>`<div class="prow" data-s="${s}"><span>${s}</span><span class="run" data-r>queued…</span></div>`).join('');
+  $('bulkProg').innerHTML=`<div class="bulkprog"><div class="phead">Fixing 3 breached passwords, guided…</div>${rows}</div>`;
+  { const d=say(21);
+    for(const s of breached){
+      const row=document.querySelector(`.prow[data-s="${s}"] [data-r]`);
+      row.textContent='opening page…';await wait(480);
+      row.textContent='new password copied';await wait(520);
+      row.textContent='you paste & save…';await wait(650);
+      row.innerHTML='<span class="ok">✓ saved · confirmed working</span>';
+      const a=VAULT.find(x=>x.site===s);a.status='safe';a.reused=false;a.weak=false;a.rotated='just now';a.secret=a.secret.slice(0,2)+'#'+Math.random().toString(36).slice(2,6)+'••••'+Math.random().toString(36).slice(2,4).toUpperCase();
+      refreshCards();renderHealth();await wait(300);
+    }
+    await d; }
+  await line(22,'Each new password is confirmed working before the old one is retired.',async()=>{
+    await clickEl('#tHist',500);tab('hist');
+  });
+  hideCap();await wait(150);
+
+  /* CH8 - ALL HEALTHY + END */
+  { const d=say(23); await chapter('Chapter 8','Everything, healthy');prog(94);
+    await clickEl('#tVault',500);tab('vault');$('scanStatus').innerHTML='';$('bulkProg').innerHTML='';renderHealth();
+    caption('Now every password is strong, unique, and un-breached.');await d; }
+  hideCap();$('popup').classList.remove('show');await wait(300);prog(100);
+  $('endcard').classList.add('show');await say(24);await wait(400);
+  await fadeOutMusic(1400);$('replay').classList.add('show');running=false;
+}
+function fit(){const el=$('stage');
+  if(pseudoFS){const w=window.innerWidth,h=window.innerHeight,portrait=h>w;
+    if(portrait){const s=Math.min(h/1280,w/720);el.style.transform=`translate(-50%,-50%) rotate(90deg) scale(${s})`;}
+    else{const s=Math.min(w/1280,h/720);el.style.transform=`translate(-50%,-50%) scale(${s})`;}
+    return;}
+  el.style.transform='';
+  const fs=!!document.fullscreenElement;const w=fs?screen.width:window.innerWidth,h=fs?screen.height:window.innerHeight;
+  const s=Math.min(w/1280,h/720);el.style.setProperty('--s',s);}
+window.addEventListener('resize',fit);fit();
+window.play=play;window.startShow=startShow;preloadAudio();
+</script>
+</body>
+</html>
